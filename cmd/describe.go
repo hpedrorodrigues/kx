@@ -1,6 +1,9 @@
 package cmd
 
-import "github.com/spf13/cobra"
+import (
+	"github.com/spf13/cobra"
+	"kx/kx"
+)
 
 var describeCmd = &cobra.Command{
 	Use:          "de",
@@ -9,6 +12,6 @@ var describeCmd = &cobra.Command{
 	Args:         cobra.NoArgs,
 	SilenceUsage: true,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return nil
+		return kx.Describe("kx de", cmd)
 	},
 }
