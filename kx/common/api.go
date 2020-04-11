@@ -31,7 +31,7 @@ func APIs() (*ResourceLookup, error) {
 	}
 
 	resourceLookup := &ResourceLookup{
-		Resources: make(map[string]Resource),
+		resources: make(map[string][]Resource),
 	}
 
 	for _, resourceList := range resourcesList {
@@ -57,7 +57,7 @@ func APIs() (*ResourceLookup, error) {
 					continue
 				}
 
-				resourceLookup.Resources[name] = resource
+				resourceLookup.resources[name] = append(resourceLookup.resources[name], resource)
 			}
 		}
 	}

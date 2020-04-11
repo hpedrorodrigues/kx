@@ -4,6 +4,14 @@ import (
 	"context"
 	"fmt"
 	"kx/kx/common"
+	"kx/kx/printer"
+	"os"
+	"strings"
+)
+
+const (
+	resourceEnvName  = "KX_RESOURCES"
+	defaultResources = "pods,deployments"
 )
 
 func List(ctx context.Context) error {
@@ -12,27 +20,31 @@ func List(ctx context.Context) error {
 		return err
 	}
 
-	r := apis.Resources["pods"]
-	if err := printResources(ctx, r); err != nil {
-		return err
+	for _, name := range getResourceNames() {
+		r, ok := apis.LookupFirst(name)
+		if !ok {
+			fmt.Printf("invalid resource: %s", name)
+			continue
+		}
+
+		list, err := common.List(ctx, r)
+		if err != nil {
+			return err
+		}
+
+		if err := printer.Print(list); err != nil {
+			return err
+		}
 	}
 
 	return nil
 }
 
-func printResources(ctx context.Context, r common.Resource) error {
-	list, err := common.List(ctx, r)
-	if err != nil {
-		return err
+func getResourceNames() []string {
+	res := os.Getenv(resourceEnvName)
+	if res == "" {
+		res = defaultResources
 	}
 
-	if len(list.Items) == 0 {
-		fmt.Println("No resources found")
-	} else {
-		for _, item := range list.Items {
-			fmt.Printf("%s/%s\n", item.GetKind(), item.GetName())
-		}
-	}
-
-	return nil
+	return strings.Split(res, ",")
 }
