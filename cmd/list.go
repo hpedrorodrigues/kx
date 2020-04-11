@@ -1,6 +1,10 @@
 package cmd
 
-import "github.com/spf13/cobra"
+import (
+	"context"
+	"github.com/spf13/cobra"
+	"kx/kx"
+)
 
 var listCmd = &cobra.Command{
 	Use:          "ls",
@@ -9,6 +13,6 @@ var listCmd = &cobra.Command{
 	Args:         cobra.NoArgs,
 	SilenceUsage: true,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return nil
+		return kx.List(context.Background())
 	},
 }
