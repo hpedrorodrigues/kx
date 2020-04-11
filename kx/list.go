@@ -23,7 +23,7 @@ func List(ctx context.Context) error {
 	for _, name := range getResourceNames() {
 		r, ok := apis.LookupFirst(name)
 		if !ok {
-			fmt.Printf("invalid resource: %s", name)
+			fmt.Printf("invalid resource: %s\n", name)
 			continue
 		}
 
