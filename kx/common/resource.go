@@ -6,25 +6,25 @@ import (
 	"strings"
 )
 
-type Resource struct {
-	GroupVersion schema.GroupVersion
-	APIResource  metav1.APIResource
+type resource struct {
+	groupVersion schema.GroupVersion
+	apiResource  metav1.APIResource
 }
 
-type ResourceLookup struct {
-	resources map[string][]Resource
+type resourceLookup struct {
+	resources map[string][]resource
 }
 
-func (rl ResourceLookup) Lookup(k string) ([]Resource, bool) {
+func (rl resourceLookup) Lookup(k string) ([]resource, bool) {
 	v, ok := rl.resources[strings.ToLower(k)]
 	return v, ok
 }
 
-func (rl ResourceLookup) LookupFirst(k string) (Resource, bool) {
+func (rl resourceLookup) LookupFirst(k string) (resource, bool) {
 	resources, ok := rl.Lookup(k)
 
 	if !ok || len(resources) == 0 {
-		return Resource{}, false
+		return resource{}, false
 	}
 
 	return resources[0], true

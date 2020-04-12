@@ -1,30 +1,46 @@
 package kx
 
 import (
+	"context"
+	"fmt"
 	"github.com/spf13/cobra"
-	"k8s.io/cli-runtime/pkg/genericclioptions"
 	"k8s.io/cli-runtime/pkg/resource"
 	cmddescribe "k8s.io/kubectl/pkg/cmd/describe"
 	"k8s.io/kubectl/pkg/cmd/util"
 	"k8s.io/kubectl/pkg/describe"
-	"os"
+	"kx/kx/common"
+	"kx/kx/fuzzyfinder"
+	"strings"
 )
 
-func Describe(parent string, cmd *cobra.Command) error {
-	streams := genericclioptions.IOStreams{In: os.Stdin, Out: os.Stdout, ErrOut: os.Stderr}
+func Describe(ctx context.Context, cmd *cobra.Command) error {
+	resources, err := common.ListResources(ctx)
+	if err != nil {
+		return err
+	}
+
+	idx, err := fuzzyfinder.Find(resources, func(i int) string {
+		r := resources[i]
+		kind, name := strings.ToLower(r.GetKind()), r.GetName()
+		return fmt.Sprintf("%s/%s", kind, name)
+	})
+
+	if err != nil {
+		return err
+	}
+
+	r := resources[idx]
+
 	o := &cmddescribe.DescribeOptions{
 		FilenameOptions: &resource.FilenameOptions{},
 		DescriberSettings: &describe.DescriberSettings{
 			ShowEvents: true,
 		},
-		CmdParent: parent,
-		IOStreams: streams,
+		IOStreams: common.GetIOStreams(),
 	}
+	f := util.NewFactory(common.GetConfigFlags())
 
-	cf := genericclioptions.NewConfigFlags(true)
-	f := util.NewFactory(cf)
-
-	args := []string{"pod", "fluentd-2zjxq"}
+	args := []string{r.GetKind(), r.GetName()}
 
 	if err := o.Complete(f, cmd, args); err != nil {
 		return err

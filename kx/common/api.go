@@ -19,7 +19,11 @@ const (
 
 var cf *genericclioptions.ConfigFlags
 
-func APIs() (*ResourceLookup, error) {
+func GetConfigFlags() *genericclioptions.ConfigFlags {
+	return cf
+}
+
+func apis() (*resourceLookup, error) {
 	dc, err := cf.ToDiscoveryClient()
 	if err != nil {
 		return nil, err
@@ -30,8 +34,8 @@ func APIs() (*ResourceLookup, error) {
 		return nil, fmt.Errorf("failed to fetch api groups from kubernetes: %w", err)
 	}
 
-	resourceLookup := &ResourceLookup{
-		resources: make(map[string][]Resource),
+	resourceLookup := &resourceLookup{
+		resources: make(map[string][]resource),
 	}
 
 	for _, resourceList := range resourcesList {
@@ -46,9 +50,9 @@ func APIs() (*ResourceLookup, error) {
 				continue
 			}
 
-			resource := Resource{
-				GroupVersion: gv,
-				APIResource:  api,
+			resource := resource{
+				groupVersion: gv,
+				apiResource:  api,
 			}
 
 			names := append([]string{api.SingularName, api.Name}, api.ShortNames...)
@@ -65,13 +69,13 @@ func APIs() (*ResourceLookup, error) {
 	return resourceLookup, nil
 }
 
-func List(ctx context.Context, r Resource) (*unstructured.UnstructuredList, error) {
+func list(ctx context.Context, r resource) (*unstructured.UnstructuredList, error) {
 	gvr := schema.GroupVersionResource{
-		Group:    r.GroupVersion.Group,
-		Version:  r.GroupVersion.Version,
-		Resource: r.APIResource.Name,
+		Group:    r.groupVersion.Group,
+		Version:  r.groupVersion.Version,
+		Resource: r.apiResource.Name,
 	}
-	ns := getNamespace()
+	ns := GetNamespace()
 
 	rc, err := cf.ToRESTConfig()
 	if err != nil {
@@ -87,7 +91,7 @@ func List(ctx context.Context, r Resource) (*unstructured.UnstructuredList, erro
 	}
 
 	var ri dynamic.ResourceInterface
-	if r.APIResource.Namespaced {
+	if r.apiResource.Namespaced {
 		ri = dyn.Resource(gvr).Namespace(ns)
 	} else {
 		ri = dyn.Resource(gvr)

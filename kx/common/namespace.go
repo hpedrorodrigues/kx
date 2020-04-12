@@ -1,6 +1,6 @@
 package common
 
-func getNamespace() string {
+func GetNamespace() string {
 	if ns := *cf.Namespace; ns != "" {
 		return ns
 	}
