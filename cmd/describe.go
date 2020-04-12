@@ -14,6 +14,6 @@ var describeCmd = &cobra.Command{
 	SuggestFor:   []string{"describe"},
 	SilenceUsage: true,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return kx.Describe(context.Background(), cmd)
+		return kx.Describe(context.TODO(), cmd)
 	},
 }

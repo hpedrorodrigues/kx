@@ -14,6 +14,6 @@ var editCmd = &cobra.Command{
 	SuggestFor:   []string{"edit"},
 	SilenceUsage: true,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return kx.Edit(context.Background(), cmd)
+		return kx.Edit(context.TODO(), cmd)
 	},
 }

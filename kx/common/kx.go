@@ -47,6 +47,26 @@ func ListResources(ctx context.Context) ([]unstructured.Unstructured, error) {
 	return items, nil
 }
 
+func ListPods(ctx context.Context) ([]unstructured.Unstructured, error) {
+	apis, err := apis()
+	if err != nil {
+		return nil, err
+	}
+
+	name := "pods"
+	r, ok := apis.LookupFirst(name)
+	if !ok {
+		fmt.Printf("invalid resource: %s\n", name)
+	}
+
+	list, err := list(ctx, r)
+	if err != nil {
+		return nil, err
+	}
+
+	return list.Items, nil
+}
+
 func GetResourceNames() string {
 	res := os.Getenv(resourceEnvName)
 	if res == "" {
