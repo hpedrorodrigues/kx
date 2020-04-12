@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/cli-runtime/pkg/genericclioptions"
+	"kx/kx/util"
 	"os"
 	"strings"
 )
@@ -65,6 +66,38 @@ func ListPods(ctx context.Context) ([]unstructured.Unstructured, error) {
 	}
 
 	return list.Items, nil
+}
+
+func ListDDS(ctx context.Context) ([]unstructured.Unstructured, error) {
+	apis, err := apis()
+	if err != nil {
+		return nil, err
+	}
+
+	var items []unstructured.Unstructured
+	filters := []string{"deployments", "daemonsets", "statefulsets"}
+
+	names := strings.Split(GetResourceNames(), ",")
+	for _, name := range names {
+		r, ok := apis.LookupFirst(name)
+		if !ok {
+			fmt.Printf("invalid resource: %s\n", name)
+			continue
+		}
+
+		if !util.SliceContains(filters, name) {
+			continue
+		}
+
+		list, err := list(ctx, r)
+		if err != nil {
+			return nil, err
+		}
+
+		items = append(items, list.Items...)
+	}
+
+	return items, nil
 }
 
 func GetResourceNames() string {

@@ -45,3 +45,22 @@ func FindPod(ctx context.Context) (unstructured.Unstructured, error) {
 
 	return resources[idx], nil
 }
+
+func FindDDS(ctx context.Context) (unstructured.Unstructured, error) {
+	resources, err := ListDDS(ctx)
+	if err != nil {
+		return unstructured.Unstructured{}, err
+	}
+
+	idx, err := fuzzyfinder.Find(resources, func(i int) string {
+		r := resources[i]
+		kind, name := strings.ToLower(r.GetKind()), r.GetName()
+		return fmt.Sprintf("%s/%s", kind, name)
+	})
+
+	if err != nil {
+		return unstructured.Unstructured{}, err
+	}
+
+	return resources[idx], nil
+}

@@ -21,4 +21,6 @@ func init() {
 	rootCmd.AddCommand(editCmd)
 	rootCmd.AddCommand(execCmd)
 	rootCmd.AddCommand(logsCmd)
+	rootCmd.AddCommand(rolloutHistoryCmd)
+	rootCmd.AddCommand(rolloutStatusCmd)
 }
