@@ -2,34 +2,19 @@ package kx
 
 import (
 	"context"
-	"fmt"
 	"github.com/spf13/cobra"
 	"k8s.io/cli-runtime/pkg/resource"
 	cmddescribe "k8s.io/kubectl/pkg/cmd/describe"
 	"k8s.io/kubectl/pkg/cmd/util"
 	"k8s.io/kubectl/pkg/describe"
 	"kx/kx/common"
-	"kx/kx/fuzzyfinder"
-	"strings"
 )
 
 func Describe(ctx context.Context, cmd *cobra.Command) error {
-	resources, err := common.ListResources(ctx)
+	r, err := common.FindResource(ctx)
 	if err != nil {
 		return err
 	}
-
-	idx, err := fuzzyfinder.Find(resources, func(i int) string {
-		r := resources[i]
-		kind, name := strings.ToLower(r.GetKind()), r.GetName()
-		return fmt.Sprintf("%s/%s", kind, name)
-	})
-
-	if err != nil {
-		return err
-	}
-
-	r := resources[idx]
 
 	o := &cmddescribe.DescribeOptions{
 		FilenameOptions: &resource.FilenameOptions{},
