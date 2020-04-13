@@ -3,7 +3,7 @@ package cmd
 import (
 	"context"
 	"github.com/spf13/cobra"
-	"kx/kx"
+	kxcmd "kx/kx/cmd"
 	"time"
 )
 
@@ -20,7 +20,7 @@ var execCmd = &cobra.Command{
 	SuggestFor:   []string{"exec"},
 	SilenceUsage: true,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return kx.Exec(context.TODO(), cmd)
+		return kxcmd.Run(kxcmd.NewExecOptions(context.TODO(), cmd))
 	},
 }
 

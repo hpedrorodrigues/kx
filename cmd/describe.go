@@ -3,7 +3,7 @@ package cmd
 import (
 	"context"
 	"github.com/spf13/cobra"
-	"kx/kx"
+	kxcmd "kx/kx/cmd"
 )
 
 var describeCmd = &cobra.Command{
@@ -14,6 +14,6 @@ var describeCmd = &cobra.Command{
 	SuggestFor:   []string{"describe"},
 	SilenceUsage: true,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return kx.Describe(context.TODO(), cmd)
+		return kxcmd.Run(kxcmd.NewDescribeOptions(context.TODO(), cmd))
 	},
 }

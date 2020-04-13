@@ -3,7 +3,7 @@ package cmd
 import (
 	"context"
 	"github.com/spf13/cobra"
-	"kx/kx"
+	kxcmd "kx/kx/cmd"
 )
 
 var rolloutStatusCmd = &cobra.Command{
@@ -14,6 +14,6 @@ var rolloutStatusCmd = &cobra.Command{
 	SuggestFor:   []string{"rollout", "rollout-status"},
 	SilenceUsage: true,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return kx.RolloutStatus(context.TODO())
+		return kxcmd.Run(kxcmd.NewRolloutStatusOptions(context.TODO(), cmd))
 	},
 }

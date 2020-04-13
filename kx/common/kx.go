@@ -68,7 +68,7 @@ func ListPods(ctx context.Context) ([]unstructured.Unstructured, error) {
 	return list.Items, nil
 }
 
-func ListDDS(ctx context.Context) ([]unstructured.Unstructured, error) {
+func ListRolloutResources(ctx context.Context) ([]unstructured.Unstructured, error) {
 	apis, err := apis()
 	if err != nil {
 		return nil, err

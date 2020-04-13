@@ -3,7 +3,7 @@ package cmd
 import (
 	"context"
 	"github.com/spf13/cobra"
-	"kx/kx"
+	kxcmd "kx/kx/cmd"
 )
 
 var editCmd = &cobra.Command{
@@ -14,6 +14,6 @@ var editCmd = &cobra.Command{
 	SuggestFor:   []string{"edit"},
 	SilenceUsage: true,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return kx.Edit(context.TODO(), cmd)
+		return kxcmd.Run(kxcmd.NewEditOptions(context.TODO(), cmd))
 	},
 }

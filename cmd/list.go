@@ -1,8 +1,9 @@
 package cmd
 
 import (
+	"context"
 	"github.com/spf13/cobra"
-	"kx/kx"
+	kxcmd "kx/kx/cmd"
 )
 
 const sortByFlag = "sort-by"
@@ -15,7 +16,7 @@ var listCmd = &cobra.Command{
 	SuggestFor:   []string{"list"},
 	SilenceUsage: true,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return kx.List(cmd)
+		return kxcmd.Run(kxcmd.NewListOptions(context.TODO(), cmd))
 	},
 }
 

@@ -15,9 +15,7 @@ func FindResource(ctx context.Context) (unstructured.Unstructured, error) {
 	}
 
 	idx, err := fuzzyfinder.Find(resources, func(i int) string {
-		r := resources[i]
-		kind, name := strings.ToLower(r.GetKind()), r.GetName()
-		return fmt.Sprintf("%s/%s", kind, name)
+		return printResource(resources[i])
 	})
 
 	if err != nil {
@@ -34,9 +32,7 @@ func FindPod(ctx context.Context) (unstructured.Unstructured, error) {
 	}
 
 	idx, err := fuzzyfinder.Find(resources, func(i int) string {
-		r := resources[i]
-		kind, name := strings.ToLower(r.GetKind()), r.GetName()
-		return fmt.Sprintf("%s/%s", kind, name)
+		return printResource(resources[i])
 	})
 
 	if err != nil {
@@ -46,16 +42,14 @@ func FindPod(ctx context.Context) (unstructured.Unstructured, error) {
 	return resources[idx], nil
 }
 
-func FindDDS(ctx context.Context) (unstructured.Unstructured, error) {
-	resources, err := ListDDS(ctx)
+func FindRolloutResources(ctx context.Context) (unstructured.Unstructured, error) {
+	resources, err := ListRolloutResources(ctx)
 	if err != nil {
 		return unstructured.Unstructured{}, err
 	}
 
 	idx, err := fuzzyfinder.Find(resources, func(i int) string {
-		r := resources[i]
-		kind, name := strings.ToLower(r.GetKind()), r.GetName()
-		return fmt.Sprintf("%s/%s", kind, name)
+		return printResource(resources[i])
 	})
 
 	if err != nil {
@@ -63,4 +57,9 @@ func FindDDS(ctx context.Context) (unstructured.Unstructured, error) {
 	}
 
 	return resources[idx], nil
+}
+
+func printResource(u unstructured.Unstructured) string {
+	kind, name := strings.ToLower(u.GetKind()), u.GetName()
+	return fmt.Sprintf("%s/%s", kind, name)
 }

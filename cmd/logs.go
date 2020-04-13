@@ -3,7 +3,7 @@ package cmd
 import (
 	"context"
 	"github.com/spf13/cobra"
-	"kx/kx"
+	kxcmd "kx/kx/cmd"
 )
 
 const (
@@ -19,7 +19,7 @@ var logsCmd = &cobra.Command{
 	SuggestFor:   []string{"logs", "log"},
 	SilenceUsage: true,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return kx.Logs(context.TODO(), cmd)
+		return kxcmd.Run(kxcmd.NewLogsOptions(context.TODO(), cmd))
 	},
 }
 
