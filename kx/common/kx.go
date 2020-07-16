@@ -3,16 +3,18 @@ package common
 import (
 	"context"
 	"fmt"
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
-	"k8s.io/cli-runtime/pkg/genericclioptions"
 	"kx/kx/util"
 	"os"
 	"strings"
+
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	"k8s.io/cli-runtime/pkg/genericclioptions"
+	_ "k8s.io/client-go/plugin/pkg/client/auth"
 )
 
 const (
 	resourceEnvName  = "KX_RESOURCES"
-	defaultResources = "pods,deployments"
+	defaultResources = "pods,deployments,services,ingresses,replicasets,replicationcontrollers,configmaps,secrets,serviceaccounts,cronjobs,daemonsets,statefulsets,hpa,nodes,lease"
 )
 
 var iostreams genericclioptions.IOStreams
